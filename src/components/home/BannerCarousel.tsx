@@ -19,8 +19,6 @@ const DOT_SPACING = 8;
 
 interface BannerCarouselProps {
   banners: string[];
-  currentIndex: number;
-  onScroll: (index: number) => void;
 }
 
 const PROMO_TEXTS = [
@@ -42,7 +40,7 @@ const PROMO_TEXTS = [
   },
 ];
 
-export const BannerCarousel = ({banners, onScroll}: BannerCarouselProps) => {
+export const BannerCarousel = ({banners}: BannerCarouselProps) => {
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const handleMomentumScrollEnd = (

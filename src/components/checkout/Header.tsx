@@ -37,8 +37,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
-    paddingTop:
-      Platform.OS === 'ios' ? 44 : StatusBar.currentHeight + SPACING.md,
+    paddingTop: Platform.OS === 'ios' ? 44 : StatusBar.currentHeight,
   },
   headerTitle: {
     fontSize: FONT_SIZE.xl,
