@@ -1,12 +1,53 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import {
+  createStackNavigator,
+  StackNavigationProp,
+} from '@react-navigation/stack';
+import {RouteProp} from '@react-navigation/native';
 import HomeScreen from '../screens/HomeScreen';
 import RestaurantDetailScreen from '../screens/RestaurantDetailScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
 import OrderConfirmationScreen from '../screens/OrderConfirmationScreen';
 import SearchScreen from '../screens/SearchScreen';
 
-const Stack = createStackNavigator();
+// Define the type for restaurant object
+export type Restaurant = {
+  id: number;
+  name: string;
+  rating: number;
+  time: string;
+  cuisine: string;
+  location: string;
+  distance: string;
+  discount: string;
+  upTo: string;
+  image: string;
+  promoted: boolean;
+};
+
+// Define the param list for all screens
+export type RootStackParamList = {
+  Home: undefined;
+  Search: undefined;
+  RestaurantDetail: {
+    restaurant: Restaurant;
+  };
+  Checkout: undefined;
+  OrderConfirmation: {
+    orderId: string;
+  };
+};
+
+// Export types for navigation prop and route prop
+export type RootStackNavigationProp<T extends keyof RootStackParamList> =
+  StackNavigationProp<RootStackParamList, T>;
+
+export type RootStackRouteProp<T extends keyof RootStackParamList> = RouteProp<
+  RootStackParamList,
+  T
+>;
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
   return (

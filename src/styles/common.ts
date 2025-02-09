@@ -175,8 +175,6 @@ export const commonStyles = StyleSheet.create({
   iconButton: {
     width: 40,
     height: 40,
-    borderRadius: BORDER_RADIUS.round,
-    backgroundColor: COLORS.gray[50],
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -261,8 +259,6 @@ export const commonStyles = StyleSheet.create({
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F0FDF4',
-    paddingHorizontal: SPACING.sm,
     paddingVertical: SPACING.xs,
     borderRadius: BORDER_RADIUS.sm,
   },

@@ -1,43 +1,53 @@
+import {Check, Clock} from 'lucide-react-native';
 import React from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
+  ActivityIndicator,
   Image,
   StatusBar,
-  ActivityIndicator,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {Check, Home, Clock} from 'lucide-react-native';
-import {
-  COLORS,
-  SPACING,
-  FONT_SIZE,
-  BORDER_RADIUS,
-  commonStyles,
-} from '../styles/common';
+import {EmptyState} from '../components/common/EmptyState';
+import {BackToHomeButton} from '../components/order/BackToHomeButton';
+import {OrderStatus} from '../components/order/OrderStatus';
 import {useOrderController} from '../hooks/useOrderController';
+import {
+  BORDER_RADIUS,
+  COLORS,
+  commonStyles,
+  FONT_SIZE,
+  SPACING,
+} from '../styles/common';
 
 export default function OrderConfirmationScreen({route}) {
-  const navigation = useNavigation();
   const {orderId} = route.params;
-  const {loading, error, orderStatus, refreshStatus} =
-    useOrderController(orderId);
+  const {
+    loading,
+    error,
+    orderStatus,
+    getStatusIndex,
+    handleBackToHome,
+    refreshStatus,
+  } = useOrderController(orderId);
 
-  const getStatusIndex = () => {
-    const statuses = ['confirmed', 'preparing', 'on-the-way', 'delivered'];
-    return statuses.indexOf(orderStatus);
-  };
+  if (loading) {
+    return (
+      <View style={commonStyles.loaderContainer}>
+        <View style={commonStyles.loaderWrapper}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      </View>
+    );
+  }
 
   if (error) {
     return (
-      <View style={[commonStyles.container, commonStyles.center]}>
-        <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={refreshStatus}>
-          <Text style={styles.retryButtonText}>Retry</Text>
-        </TouchableOpacity>
-      </View>
+      <EmptyState
+        message={error}
+        buttonText="Retry"
+        onButtonPress={refreshStatus}
+      />
     );
   }
 
@@ -64,81 +74,10 @@ export default function OrderConfirmationScreen({route}) {
             </View>
           </View>
 
-          <View style={styles.orderStatus}>
-            <View style={styles.statusStep}>
-              <View style={[styles.statusDot, styles.activeDot]} />
-              <Text
-                style={[
-                  styles.statusText,
-                  getStatusIndex() >= 0 && styles.activeStatusText,
-                ]}>
-                Order Confirmed
-              </Text>
-            </View>
-            <View
-              style={[
-                styles.statusLine,
-                getStatusIndex() >= 1 && styles.activeLine,
-              ]}
-            />
-            <View style={styles.statusStep}>
-              <View
-                style={[
-                  styles.statusDot,
-                  getStatusIndex() >= 1 && styles.activeDot,
-                ]}
-              />
-              <Text
-                style={[
-                  styles.statusText,
-                  getStatusIndex() >= 1 && styles.activeStatusText,
-                ]}>
-                Being Prepared
-              </Text>
-            </View>
-            <View
-              style={[
-                styles.statusLine,
-                getStatusIndex() >= 2 && styles.activeLine,
-              ]}
-            />
-            <View style={styles.statusStep}>
-              <View
-                style={[
-                  styles.statusDot,
-                  getStatusIndex() >= 2 && styles.activeDot,
-                ]}
-              />
-              <Text
-                style={[
-                  styles.statusText,
-                  getStatusIndex() >= 2 && styles.activeStatusText,
-                ]}>
-                On the Way
-              </Text>
-            </View>
-            <View
-              style={[
-                styles.statusLine,
-                getStatusIndex() >= 3 && styles.activeLine,
-              ]}
-            />
-            <View style={styles.statusStep}>
-              <View
-                style={[
-                  styles.statusDot,
-                  getStatusIndex() >= 3 && styles.activeDot,
-                ]}
-              />
-              <Text
-                style={[
-                  styles.statusText,
-                  getStatusIndex() >= 3 && styles.activeStatusText,
-                ]}>
-                Delivered
-              </Text>
-            </View>
-          </View>
+          <OrderStatus
+            orderStatus={orderStatus}
+            statusIndex={getStatusIndex()}
+          />
         </View>
 
         <Image
@@ -149,20 +88,7 @@ export default function OrderConfirmationScreen({route}) {
         />
       </View>
 
-      <TouchableOpacity
-        style={styles.homeButton}
-        onPress={() => navigation.navigate('Home')}>
-        <Home size={20} color={COLORS.text.light} />
-        <Text style={styles.homeButtonText}>Back to Home</Text>
-      </TouchableOpacity>
-
-      {loading ? (
-        <View style={commonStyles.loaderContainer}>
-          <View style={commonStyles.loaderWrapper}>
-            <ActivityIndicator size="large" color={COLORS.primary} />
-          </View>
-        </View>
-      ) : null}
+      <BackToHomeButton onPress={handleBackToHome} />
     </View>
   );
 }
@@ -212,69 +138,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.text.primary,
   },
-  orderStatus: {
-    width: '100%',
-    marginTop: SPACING.xl,
-  },
-  statusStep: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: SPACING.sm,
-  },
-  statusDot: {
-    width: 16,
-    height: 16,
-    borderRadius: BORDER_RADIUS.round,
-    marginRight: SPACING.md,
-  },
-  activeDot: {
-    backgroundColor: COLORS.secondary,
-  },
-  upcomingDot: {
-    backgroundColor: COLORS.gray[200],
-  },
-  statusLine: {
-    width: 2,
-    height: 20,
-    backgroundColor: COLORS.gray[200],
-    marginLeft: 7,
-  },
-  activeLine: {
-    backgroundColor: COLORS.secondary,
-  },
-  statusText: {
-    fontSize: FONT_SIZE.md,
-    color: COLORS.text.secondary,
-  },
   deliveryImage: {
     width: 200,
     height: 200,
     borderRadius: BORDER_RADIUS.round,
     marginBottom: SPACING.xxxl,
-  },
-  homeButton: {
-    ...commonStyles.button,
-    backgroundColor: COLORS.primary,
-    margin: SPACING.lg,
-  },
-  homeButtonText: {
-    ...commonStyles.buttonText,
-    marginLeft: SPACING.sm,
-  },
-  errorText: {
-    fontSize: FONT_SIZE.lg,
-    color: COLORS.error,
-    marginBottom: SPACING.md,
-  },
-  retryButton: {
-    ...commonStyles.button,
-    paddingHorizontal: SPACING.xl,
-  },
-  retryButtonText: {
-    ...commonStyles.buttonText,
-  },
-  activeStatusText: {
-    color: COLORS.secondary,
-    fontWeight: '600',
   },
 });
