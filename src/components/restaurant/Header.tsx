@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: COLORS.primary,
     padding: SPACING.lg,
-    paddingTop: StatusBar.currentHeight,
   },
   backButton: {
     marginBottom: SPACING.lg,

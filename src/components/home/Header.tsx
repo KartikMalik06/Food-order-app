@@ -70,7 +70,6 @@ export const Header = ({address}: HeaderProps) => {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: COLORS.background,
-    paddingTop: Platform.OS === 'ios' ? 44 : StatusBar.currentHeight,
   },
   headerTop: {
     ...commonStyles.spaceBetween,
